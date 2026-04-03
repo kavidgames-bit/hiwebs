@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HiWebs Organizer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="dashboard.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div class="app-container">
+        
+        <aside class="sidebar section-panel">
+            <div class="brand">
+                <i data-lucide="layout-dashboard" class="brand-icon"></i>
+                <h1>HiWebs Dashboard</h1>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active">
+                    <i data-lucide="folder"></i>
+                    <span>Proyectos</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i data-lucide="pie-chart"></i>
+                    <span>Estadísticas</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <p>Gestor de Entorno</p>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-bar section-panel">
+                <div class="search-bar">
+                    <i data-lucide="search"></i>
+                    <input type="text" id="searchInput" placeholder="Buscar proyecto por nombre, cliente o tags...">
+                </div>
+                <div class="filter-group">
+                    <select id="statusFilter" class="filter-select">
+                        <option value="all">Todos los estados</option>
+                        <option value="Terminado">Terminados</option>
+                        <option value="En Proceso">En Proceso</option>
+                        <option value="Mantenimiento">Mantenimiento</option>
+                    </select>
+                </div>
+                <button id="addProjectBtn" class="btn-primary">
+                    <i data-lucide="plus"></i>
+                    <span>Nuevo Proyecto</span>
+                </button>
+            </header>
+
+            <div class="projects-area">
+                <div id="projectsGrid" class="projects-grid">
+                    <!-- Projects will be rendered here -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal for new/edit project -->
+    <div id="projectModal" class="modal-overlay">
+        <div class="modal section-panel scrollable-modal">
+            <div class="modal-header">
+                <h2 id="modalTitle">Detalles del Proyecto</h2>
+                <button id="closeModalBtn" class="icon-btn"><i data-lucide="x"></i></button>
+            </div>
+            <form id="projectForm" class="modal-form">
+                
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label for="pName">Nombre del Proyecto *</label>
+                        <input type="text" id="pName" required placeholder="Ej: Sistema V2">
+                    </div>
+                    <div class="form-group half">
+                        <label for="pClient">Cliente / Dueño</label>
+                        <input type="text" id="pClient" placeholder="Ej: Empresa S.A">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label for="pUrl">Carpeta Local / Archivo *</label>
+                        <input type="text" id="pUrl" required placeholder="Ej: ../mi-proyecto/index.html">
+                    </div>
+                    <div class="form-group half">
+                        <label for="pDomain">Dominio del Cliente</label>
+                        <input type="text" id="pDomain" placeholder="Ej: https://ascensoresmicromac.com">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label for="pPrice">Precio Acordado ($)</label>
+                        <input type="number" id="pPrice" placeholder="Ej: 150000">
+                    </div>
+                    <div class="form-group half">
+                        <label for="pPayment">Estado de Pago</label>
+                        <select id="pPayment" required>
+                            <option value="Pendiente" selected>Pendiente</option>
+                            <option value="A Señado">A Señado / Adelanto</option>
+                            <option value="Pagado">Cancelado / Pagado</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label for="pStatus">Estado</label>
+                        <select id="pStatus" required>
+                            <option value="En Proceso">En Proceso</option>
+                            <option value="Terminado">Terminado</option>
+                            <option value="Mantenimiento">Mantenimiento</option>
+                            <option value="Pausado">Pausado</option>
+                        </select>
+                    </div>
+                    <div class="form-group half">
+                        <label for="pPriority">Prioridad</label>
+                        <select id="pPriority" required>
+                            <option value="Alta">Alta</option>
+                            <option value="Media" selected>Media</option>
+                            <option value="Baja">Baja</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="pTags">Tecnologías / Etiquetas (separadas por coma)</label>
+                    <input type="text" id="pTags" placeholder="Ej: React, Node, Web Premium">
+                </div>
+
+                <div class="form-group">
+                    <label for="pDesc">Descripción / Notas</label>
+                    <textarea id="pDesc" rows="3" placeholder="Información adicional del desarrollo..."></textarea>
+                </div>
+                
+                <div class="form-group colors-group">
+                    <label>Color Identificador</label>
+                    <div class="color-picker" id="colorPickerGroup">
+                        <!-- Primeros 5 colores -->
+                        <input type="radio" name="pColor" value="#3b82f6" id="c1" checked>
+                        <label for="c1" style="--c: #3b82f6;"></label>
+                        <input type="radio" name="pColor" value="#06b6d4" id="c2">
+                        <label for="c2" style="--c: #06b6d4;"></label>
+                        <input type="radio" name="pColor" value="#10b981" id="c3">
+                        <label for="c3" style="--c: #10b981;"></label>
+                        <input type="radio" name="pColor" value="#84cc16" id="c4">
+                        <label for="c4" style="--c: #84cc16;"></label>
+                        <input type="radio" name="pColor" value="#f59e0b" id="c5">
+                        <label for="c5" style="--c: #f59e0b;"></label>
+                        
+                        <!-- Nuevos 5 colores -->
+                        <input type="radio" name="pColor" value="#f97316" id="c6">
+                        <label for="c6" style="--c: #f97316;"></label>
+                        <input type="radio" name="pColor" value="#ef4444" id="c7">
+                        <label for="c7" style="--c: #ef4444;"></label>
+                        <input type="radio" name="pColor" value="#ec4899" id="c8">
+                        <label for="c8" style="--c: #ec4899;"></label>
+                        <input type="radio" name="pColor" value="#8b5cf6" id="c9">
+                        <label for="c9" style="--c: #8b5cf6;"></label>
+                        <input type="radio" name="pColor" value="#64748b" id="c10">
+                        <label for="c10" style="--c: #64748b;"></label>
+                        <input type="radio" name="pColor" value="#333333" id="c11">
+                        <label for="c11" style="--c: #333333;"></label>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" id="cancelModalBtn" class="btn-secondary">Cancelar</button>
+                    <button type="submit" class="btn-primary">Guardar Proyecto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>
